@@ -47,12 +47,17 @@ skull_positions = []
 
 
      
+#WŁĄCZENIE LICZNIKA CZASU
+
+
    
-#GŁÓWNA PĘTLA GRY   
+#GŁÓWNA PĘTLA GRY
+
+start_time = pygame.time.get_ticks()  
+
 def start_game():
     
-
-    global player_x, player_y, star_x, star_y, skull_x, skull_y, score
+    global player_x, player_y, star_x, star_y, skull_x, skull_y, score, start_time
     global game_won, game_lost, lost_lives #robimy te zmienne jako globalne żeby funkcja mogla je widziec
     
     clock = pygame.time.Clock()
@@ -81,11 +86,7 @@ def start_game():
         player_x = max(0, min(player_x, WIDTH - PLAYER_IMAGE.get_width()))
         player_y = max(0, min(player_y, HEIGHT - PLAYER_IMAGE.get_height()))
         
-        #WYKRYWANIE KOLIZJI GRACZ-CZASZKA
-        player_rect = pygame.Rect(player_x, player_y, PLAYER_IMAGE.get_width(), PLAYER_IMAGE.get_height())
-        if check_collision_with_skull(player_rect):
-            lost_lives -= 1
-            spawn_skulls()
+        
             
            
         
@@ -101,6 +102,12 @@ def start_game():
                 star_y = random.randint(0, HEIGHT - STAR_IMAGE.get_height())
                 spawn_skulls()
             
+            #WYKRYWANIE KOLIZJI GRACZ-CZASZKA
+            player_rect = pygame.Rect(player_x, player_y, PLAYER_IMAGE.get_width(), PLAYER_IMAGE.get_height())
+            if check_collision_with_skull(player_rect):
+                lost_lives -= 1
+                spawn_skulls()
+            
             #jesli zebrano x punktow - przerywamy petlea
             if check_victory():
                 game_won = True
@@ -113,9 +120,10 @@ def start_game():
         
             #rysujemy odswiezone okno    
             draw_window(player_x, player_y)
-       
+
         
     pygame.quit()
+    
     
 #FUNKCJA RYSUJĄCA RZECZY NA EKRANIE
 def draw_window(x, y):
@@ -127,6 +135,12 @@ def draw_window(x, y):
          for skull_x, skull_y in skull_positions:
             WIN.blit(SKULL_IMAGE, (skull_x, skull_y))
         
+        
+         #obliczanie czasu który minął
+         elapsed_time = (pygame.time.get_ticks() - start_time) // 1000
+         timer_text = font.render(f"Czas gry: {elapsed_time}s", True, (255,255,255))
+         WIN.blit(timer_text, (WIDTH - 150, 10))
+         
          score_text = font.render(f"Zdobyte gwiazdki: {score}", True, (255, 255, 255))
          lost_text = font.render(f"Pozostałe życia: {lost_lives}", True, (255, 255, 255))
       
@@ -140,8 +154,7 @@ def draw_window(x, y):
          lost_text = font.render('Przegrałes, nacisnij ESC zeby wyjsc.', True, (0, 255, 0))
          text_rect = lost_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
          WIN.blit(lost_text, text_rect)
-     
-          
+                   
      pygame.display.update() 
      
 #Funkcja sprawdzająca czy zdobyto okreslona liczbe punktów
