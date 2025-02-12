@@ -121,7 +121,7 @@ def start_game():
             #rysujemy odswiezone okno    
             draw_window(player_x, player_y)
 
-        
+    pygame.time.delay(2000)   
     pygame.quit()
     
     
@@ -151,7 +151,7 @@ def draw_window(x, y):
          text_rect = win_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
          WIN.blit(win_text, text_rect)
      elif game_lost:
-         lost_text = font.render('Przegrałes, nacisnij ESC zeby wyjsc.', True, (0, 255, 0))
+         lost_text = font.render('Przegrałes!', True, (0, 255, 0))
          text_rect = lost_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
          WIN.blit(lost_text, text_rect)
                    
